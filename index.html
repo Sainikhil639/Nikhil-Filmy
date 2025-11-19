@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <title>Nikhil filmy | AI Movie Discovery</title>
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2300c6ff;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%230072ff;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23grad1)' d='M448 32H64c-17.67 0-32 14.33-32 32v384c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zM96 136c-13.25 0-24-10.75-24-24s10.75-24 24-24 24 10.75 24 24-10.75 24-24 24zm0 160c-13.25 0-24-10.75-24-24s10.75-24 24-24 24 10.75 24 24-10.75 24-24 24zm0 160c-13.25 0-24-10.75-24-24s10.75-24 24-24 24 10.75 24 24-10.75 24-24 24zM416 136c-13.25 0-24-10.75-24-24s10.75-24 24-24 24 10.75 24 24-10.75 24-24 24zm0 160c-13.25 0-24-10.75-24-24s10.75-24 24-24 24 10.75 24 24-10.75 24-24 24zm0 160c-13.25 0-24-10.75-24-24s10.75-24 24-24 24 10.75 24 24-10.75 24-24 24z'/%3E%3C/svg%3E"
+        type="image/svg+xml">
+
+    <style>
+        :root {
+            --bg-dark: #0f1014;
+            --bg-card: #1b1c22;
+            --accent: #00f2ea;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: block;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 1rem 1rem 1rem;
+        }
+
+        h1,
+        h4 {
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1 {
+            font-size: 3rem;
+        }
+
+        h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .search-wrapper {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        #userPrompt {
+            width: 100%;
+            background: var(--bg-card);
+            border: 2px solid #333;
+            color: #fff;
+            padding: 1.2rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        #userPrompt:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 242, 234, 0.2);
+        }
+
+        button#btnGo {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            bottom: 8px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0 2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button#btnGo:hover {
+            transform: scale(1.05);
+        }
+
+        button#btnGo:disabled {
+            background: #555;
+            cursor: wait;
+            transform: none;
+        }
+
+        .controls {
+            display: none;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            padding: 0 10px;
+            position: relative;
+            z-index: 50;
+        }
+
+        .custom-select {
+            position: relative;
+            width: 220px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+
+        .select-trigger {
+            background: var(--bg-card);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border 0.3s;
+        }
+
+        .select-trigger:hover {
+            border-color: var(--accent);
+        }
+
+        .select-options {
+            position: absolute;
+            top: 110%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .select-options.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .option {
+            padding: 10px 15px;
+            border-bottom: 1px solid #2a2a2a;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:last-child {
+            border-bottom: none;
+        }
+
+        .option:hover {
+            background: #2a2a2a;
+            color: var(--accent);
+        }
+
+        .option i {
+            width: 20px;
+            text-align: center;
+            color: var(--accent);
+        }
+
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 300px;
+            width: 170px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 1px solid #333;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border-color: var(--accent);
+        }
+
+        .poster {
+            height: 80%;
+            background-color: #222;
+            background-size: cover;
+            background-position: center;
+            width: 100%;
+        }
+
+        .info {
+            padding: 0.9rem;
+            padding-top: 5px;
+        }
+
+        .title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1.3;
+        }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .rating {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        #status {
+            margin-top: 1rem;
+            font-family: monospace;
+            color: var(--text-muted);
+            height: 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <!-- <h1>Nikhil Filmy</h1> -->
+        <h1>
+            <i class="fa-solid fa-film"
+                style="background: -webkit-linear-gradient(#00c6ff, #0072ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            Nikhil Filmy
+        </h1>
+        <h4>Movie Recommendations</h4>
+        <p class="subtitle">Describe a vibe, plot, or feeling. AI does the rest.</p>
+
+        <div class="search-wrapper">
+            <div class="search-container">
+                <input type="text" id="userPrompt" placeholder="e.g., 'Mind-bending sci-fi movies that are scary'">
+                <button id="btnGo" onclick="runLumina()">Search</button>
+            </div>
+
+            <div class="controls" id="sortControls">
+                <span style="color:#aaa; font-size:0.9rem;">Sort By:</span>
+
+                <div class="custom-select" id="customSelect">
+                    <div class="select-trigger" onclick="toggleDropdown()">
+                        <span id="selectedText">✨ Relevance</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+
+                    <div class="select-options">
+                        <div class="option" onclick="selectOption('default', '✨ Relevance')">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Relevance
+                        </div>
+                        <div class="option" onclick="selectOption('rating_high', '⭐ Rating: High to Low')">
+                            <i class="fa-solid fa-arrow-up-9-1"></i> Rating: High to Low
+                        </div>
+                        <div class="option" onclick="selectOption('rating_low', '⭐ Rating: Low to High')">
+                            <i class="fa-solid fa-arrow-down-1-9"></i> Rating: Low to High
+                        </div>
+                        <div class="option" onclick="selectOption('newest', '📅 Release: Latest First')">
+                            <i class="fa-regular fa-calendar-plus"></i> Release: Latest First
+                        </div>
+                        <div class="option" onclick="selectOption('oldest', '📅 Release: Oldest First')">
+                            <i class="fa-regular fa-calendar-minus"></i> Release: Oldest First
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="status"></div>
+    </header>
+
+    <main id="movieGrid" class="movie-grid"></main>
+
+    <script>
+        // API CONFIGURATION
+        const MODEL_NAME = "gemini-2.5-flash-lite";
+        const geminiKey = "AIzaSyA9YBLDtRCt7-OdX8ylLdkKgfoPz9eHBU0";
+        const tmdbKey = "b6ed0366df58af3c63fae705358f25c9";
+        const statusDiv = document.getElementById('status');
+
+        let fetchedMovies = [];
+        let currentSort = 'default';
+
+        function toggleDropdown() {
+            document.querySelector('.select-options').classList.toggle('open');
+        }
+
+        function selectOption(value, text) {
+            document.getElementById('selectedText').innerHTML = text;
+            document.querySelector('.select-options').classList.remove('open');
+            currentSort = value;
+            sortAndRender();
+        }
+
+        window.addEventListener('click', function (e) {
+            if (!document.querySelector('.custom-select').contains(e.target)) {
+                document.querySelector('.select-options').classList.remove('open');
+            }
+        });
+
+        function setStatus(msg, type = "neutral") {
+            statusDiv.innerText = msg;
+            statusDiv.style.color = type === "error" ? "#ff5555" : type === "success" ? "#00f2ea" : "#aaa";
+        }
+
+        async function runLumina() {
+            const prompt = document.getElementById('userPrompt').value.trim();
+            if (!geminiKey) return setStatus("Ai API Key Error, Contact Developer.", "error");
+            if (!prompt) return setStatus("Please enter a movie description.", "error");
+
+            const btn = document.getElementById('btnGo');
+            const grid = document.getElementById('movieGrid');
+            const controls = document.getElementById('sortControls');
+
+            // Reset State
+            btn.disabled = true;
+            btn.innerText = "...";
+            setStatus("Searching the best for you...");
+            grid.innerHTML = '';
+            fetchedMovies = [];
+            controls.style.display = 'none';
+
+            try {
+                // Fetch Movie Titles from Gemini
+                const titles = await fetchGeminiRecommendations(prompt, geminiKey);
+                setStatus(`Found ${titles.length} matches. Loading visuals...`, "success");
+
+                // Fetch Posters from TMDB
+                for (const title of titles) {
+                    const movie = await fetchTMDBData(title, tmdbKey);
+                    if (movie) {
+                        fetchedMovies.push(movie);
+                        createMovieCard(movie);
+                    }
+                    controls.style.display = 'flex';
+                    await new Promise(r => setTimeout(r, 100));
+                }
+
+                setStatus("Ready.", "neutral");
+
+            } catch (error) {
+                console.error(error);
+                setStatus(error.message, "error");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Search";
+            }
+        }
+
+        function sortAndRender() {
+            const grid = document.getElementById('movieGrid');
+            if (fetchedMovies.length === 0) return;
+
+            let sortedList = [...fetchedMovies];
+
+            if (currentSort === 'rating_high') {
+                sortedList.sort((a, b) => b.vote_average - a.vote_average);
+            } else if (currentSort === 'rating_low') {
+                sortedList.sort((a, b) => a.vote_average - b.vote_average);
+            } else if (currentSort === 'newest') {
+                sortedList.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+            } else if (currentSort === 'oldest') {
+                sortedList.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
+            }
+
+            grid.innerHTML = '';
+            sortedList.forEach(movie => createMovieCard(movie));
+        }
+
+        async function fetchGeminiRecommendations(prompt, apiKey) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
+
+            const systemPrompt = `
+                You are a knowledgeable movie database expert with deep understanding of Global Cinema (including Indian Cinema - Tollywood, Bollywood, Kollywood).
+
+                Analyze the specific mood, genre, theme, or era requested in User Query: "${prompt}"
+
+                Guidelines for Accuracy:
+                1. Prioritize movies with high critical acclaim (Rotten Tomatoes/IMDb) or cult status.
+                2. Avoid TV shows, series, or shorts (Feature films only).
+                3. Ensure diversity in the list (mix of blockbusters, hidden gems, and classics).
+                4. Use the exact official English title to ensure database lookup success (e.g., use "Star Wars" not "Star Wars Episode IV").
+                5. If a specific actor/actress is mentioned (e.g., "Megastar"), ONLY list their movies.
+                6. If fewer than 50 relevant movies exist, return as many as possible without filler titles.
+                7. Do NOT include any additional text, explanations, or formatting outside of the JSON array.
+                8. Respond in English.
+                9. Stick to movies released up to 2024.
+                10. Avoid duplicates.
+                11. Exclude remakes, reboots, or sequels unless specifically requested.
+                12. Focus on original titles rather than translated or localized versions.
+                13. Ensure the list is relevant to the user's query.
+                14. Avoid overly obscure titles that lack sufficient information for database lookup.
+                15. Do NOT include any non-movie entries.
+
+                Important:
+                1.You are a smart Movie Database Translator.
+                2. Always return the ORIGINAL English Title for Dubbed Movies.
+                3. If user asks for "Robo", you must return "Enthiran" (2010).
+                4. If user asks for "Robot", you must return "Enthiran".
+                5. If user asks for "7th Sense", you must return "7aum Arivu".
+                6. If user asks for "Yamudu", you must return "Singam".
+                7. If user asks for "Hollywood movies dubbed in Telugu", return the ORIGINAL English Titles (e.g., "Transformers", "Avatar", "Iron Man").
+                8. Do NOT write "Transformers Telugu". Just write "Transformers".
+                9. If user asks for "Robo movies", only return movies featuring Robots.
+                10. Prioritize Relevance over Quantity: Do NOT fill the list with random movies like "Baahubali" or "KGF" unless they strictly fit the genre requested.
+                11. duplicates are not allowed.
+                12. Return up to 50 titles only.
+
+                Output Format:
+                Return ONLY a raw JSON Array of strings. 
+                No markdown. No extra text.
+                OUTPUT ONLY A JSON ARRAY. NO TEXT BEFORE OR AFTER.
+                
+                Example: ["Movie A", "Movie B, "Movie C", ... up to 50 titles]
+            `;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: systemPrompt }] }] })
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error?.message || "AI connection failed. please try again.");
+
+            let text = data.candidates[0].content.parts[0].text;
+            const jsonMatch = text.match(/\[[\s\S]*\]/);
+
+            if (!jsonMatch) throw new Error("Something went wrong. Please try again.");
+
+            try {
+                return JSON.parse(jsonMatch[0]);
+            } catch (e) {
+                throw new Error("Failed to parse AI response.");
+            }
+        }
+
+        async function fetchTMDBData(title, apiKey) {
+            const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(title)}`;
+            const res = await fetch(url);
+            const data = await res.json();
+            return data.results?.[0];
+        }
+
+        function createMovieCard(movie) {
+            const grid = document.getElementById('movieGrid');
+            const posterUrl = movie.poster_path
+                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                : 'https://via.placeholder.com/500x750?text=No+Poster';
+
+            const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            // Google Search on Click
+            card.onclick = () => {
+                const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(movie.title + " movie")}`;
+                window.open(googleSearchUrl, '_blank');
+            };
+
+            card.innerHTML = `
+                <div class="poster" style="background-image: url('${posterUrl}')"></div>
+                <div class="info">
+                    <div class="title">${movie.title}</div>
+                    <div class="meta">
+                        <span class="rating"><i style="color: gold; font-size: 16px;" class="fa-solid fa-star"></i> ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</span>
+                        <span>${year}</span>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+    </script>
+</body>
+
+</html>
