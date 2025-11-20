@@ -197,13 +197,11 @@
         .select-trigger {
             background: #00000080;
             border: 1px solid #333;
-
             border-radius: 8px;
             padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: border 0.3s;
         }
 
         .select-trigger:hover {
@@ -280,6 +278,34 @@
             flex-direction: column;
             position: relative;
             border: 1px solid #333;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 1px solid #333;
+            will-change: transform;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card:hover {
@@ -533,11 +559,22 @@
             }
         });
 
+        function scrollToHome() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        let ticking = false;
         window.addEventListener('scroll', () => {
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollPercent = (scrollTop / docHeight) * 100;
-            document.querySelector('.progress-bar').style.width = scrollPercent + '%';
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollTop = window.scrollY;
+                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const scrollPercent = (scrollTop / docHeight) * 100;
+                    document.querySelector('.progress-bar').style.width = scrollPercent + '%';
+                    ticking = false;
+                });
+                ticking = true;
+            }
         });
 
         function setStatus(msg, type = "neutral") {
@@ -567,7 +604,7 @@
 
             btn.innerHTML = '<i style="font-size:20px;" class="fa-solid fa-circle-stop"></i>';
             setStatus("Searching the best for you...");
-            btn.style.background = "#f3ad9a";
+            btn.style.background = "#ff4b4b";
             grid.innerHTML = '';
             fetchedMovies = [];
             controls.style.display = 'none';
@@ -583,9 +620,29 @@
 
                 setStatus(`Found ${titles.length} matches. Loading visuals...`, "success");
 
-                // Fetch Posters from TMDB
-                for (const title of titles) {
+                // // Fetch Posters from TMDB
+                // for (const title of titles) {
+                //     let movie = await fetchTMDBData(title, tmdbKey);
+                //     if (!movie) {
+                //         movie = {
+                //             title: title,
+                //             poster_path: "https://demofree.sirv.com/nope-not-here.jpg",
+                //             vote_average: null,
+                //             release_date: null,
+                //             id: `ghost-${Math.random().toString(36).substr(2, 9)}`
+                //         };
+                //     }
+                //     fetchedMovies.push(movie);
+                //     createMovieCard(movie, i);
+
+                //     controls.style.display = 'flex';
+                //     await new Promise(r => setTimeout(r, 50));
+                // }
+
+                for (let i = 0; i < titles.length; i++) {
+                    let title = titles[i];
                     let movie = await fetchTMDBData(title, tmdbKey);
+
                     if (!movie) {
                         movie = {
                             title: title,
@@ -595,11 +652,12 @@
                             id: `ghost-${Math.random().toString(36).substr(2, 9)}`
                         };
                     }
+
                     fetchedMovies.push(movie);
-                    createMovieCard(movie);
+                    createMovieCard(movie, i);
 
                     controls.style.display = 'flex';
-                    await new Promise(r => setTimeout(r, 100));
+                    await new Promise(r => setTimeout(r, 50));
                 }
 
                 setStatus("Ready.", "neutral");
@@ -634,9 +692,13 @@
                 sortedList.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
             }
 
-            grid.innerHTML = '';
-            sortedList.forEach(movie => createMovieCard(movie));
-            scrollToHome();
+            grid.style.opacity = '0';
+            setTimeout(() => {
+                grid.innerHTML = '';
+                grid.style.opacity = '1';
+                sortedList.forEach((movie, index) => createMovieCard(movie, index));
+                scrollToHome();
+            }, 200);
         }
 
         async function fetchGeminiRecommendations(prompt, apiKey) {
@@ -713,17 +775,13 @@
             return data.results?.[0];
         }
 
-        function scrollToHome() {
-            window.scrollTo(0, 0);
-        }
-
-        function createMovieCard(movie) {
+        function createMovieCard(movie, index = 0) {
             const grid = document.getElementById('movieGrid');
             let posterUrl;
             if (movie.poster_path && movie.poster_path.startsWith('http')) {
                 posterUrl = movie.poster_path;
             } else if (movie.poster_path) {
-                posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                posterUrl = `https://image.tmdb.org/t/p/w300${movie.poster_path}`;
             } else {
                 posterUrl = "https://demofree.sirv.com/nope-not-here.jpg";
             }
@@ -739,6 +797,7 @@
 
             const card = document.createElement('div');
             card.className = 'card';
+            card.style.animationDelay = `${index * 50}ms`;
 
             // Search on click
             card.onclick = () => {
