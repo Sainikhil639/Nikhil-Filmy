@@ -314,7 +314,18 @@
             width: 100%;
             max-width: 1200px;
             padding: 3rem 2rem;
+            padding-top: 1rem !important;
             animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .card {
@@ -331,6 +342,18 @@
             will-change: transform;
             opacity: 0;
             animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .floating-button {
@@ -361,19 +384,6 @@
 
         .floating-button:hover {
             transform: translateY(-5px);
-        }
-
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .card:hover {
@@ -432,6 +442,7 @@
             font-family: monospace;
             color: var(--text-muted);
             height: 20px;
+            display: none;
         }
 
         footer a {
@@ -454,14 +465,80 @@
             color: #666;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
+        .nav-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
 
-            to {
-                opacity: 1;
-            }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .nav-btn.active {
+            background: rgba(0, 198, 255, 0.15);
+            border-color: var(--brand-primary);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 198, 255, 0.2);
+        }
+
+        .nav-btn.active i {
+            color: var(--brand-primary);
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0 40px 0;
+            width: 100%;
+        }
+
+        .pagination-controls button {
+            background: var(--bg-card);
+            border: 1px solid #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-controls button:hover:not(:disabled) {
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+        }
+
+        .pagination-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #pageIndicator {
+            font-weight: bold;
+            color: var(--brand-primary);
         }
 
 
@@ -546,6 +623,162 @@
             #btnClear {
                 right: 43px;
             }
+
+            .nav-btn {
+                padding: 8px 20px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* --- BROWSE PAGE LAYOUT --- */
+        .browse-container {
+            display: flex;
+            width: 100%;
+            max-width: 1400px;
+            margin: 20px auto;
+            gap: 30px;
+            padding: 0 20px;
+            align-items: flex-start;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            /* Stick below header */
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: none;
+            color: var(--brand-primary);
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group h4 {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: #ddd;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            background: #0b0c10;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        /* Genre Tags */
+        .checkbox-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .genre-tag {
+            background: #222;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: 1px solid #333;
+            user-select: none;
+        }
+
+        .genre-tag.selected {
+            background: var(--brand-gradient);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .browse-results {
+            flex: 1;
+            width: 100%;
+        }
+
+        #loadMoreBtn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 30px;
+            background: var(--bg-card);
+            border: 1px solid var(--brand-primary);
+            color: var(--brand-primary);
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        #loadMoreBtn:hover {
+            background: var(--brand-primary);
+            color: #000;
+        }
+
+        .apply-mobile-btn {
+            display: none;
+        }
+
+        /* Mobile Sidebar */
+        @media (max-width: 768px) {
+            .browse-container {
+                flex-direction: column;
+                padding: 0;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: relative;
+                top: 0;
+                z-index: 50;
+                display: none;
+                /* Hidden initially, toggled via button */
+            }
+
+            .sidebar.active {
+                display: block;
+            }
+
+            .apply-mobile-btn {
+                display: block;
+                width: 100%;
+                margin-top: 20px;
+                padding: 12px;
+                background: var(--brand-gradient);
+                border: none;
+                color: #fff;
+                border-radius: 8px;
+            }
         }
     </style>
 </head>
@@ -560,9 +793,24 @@
         </h1>
         <h4>AI Powered Movie Recommendations</h4>
         <p class="subtitle">Describe a vibe, plot, or feeling. AI does the rest.</p>
+
+        <div class="nav-wrapper">
+            <button class="nav-btn active" onclick="switchTab('home')">
+                <i class="fa-solid fa-fire"></i> Trending
+            </button>
+            <button class="nav-btn" onclick="switchTab('top-100')">
+                <i class="fa-solid fa-fire"></i> Top 100
+            </button>
+            <button class="nav-btn" onclick="switchTab('search')">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Search
+            </button>
+            <!-- <button class="nav-btn" onclick="switchTab('browse')">
+                <i class="fa-solid fa-layer-group"></i> Browse All
+            </button> -->
+        </div>
     </header>
 
-    <div class="search-wrapper">
+    <div class="search-wrapper" style="display: none;">
         <div class="search-container">
 
             <textarea id="userPrompt" rows="1" placeholder="e.g., 'Mind-bending sci-fi movies that are scary'"
@@ -578,7 +826,7 @@
         </div>
 
         <div class="controls" id="sortControls">
-            <span style="color:#666; font-size:0.9rem; font-weight: 600;">Sort By:</span>
+            <span style="color:#666; font-size:0.9rem; font-weight: 600;">Sort</span>
             <div class="custom-select" id="customSelect">
                 <div class="select-trigger" onclick="toggleDropdown()">
                     <span id="selectedText">✨ Relevance</span>
@@ -600,9 +848,57 @@
         </div>
     </div>
 
+
+    <div id="browsePage" style="display: none;">
+        <div class="browse-container">
+            
+            <aside class="sidebar" id="filterSidebar">
+                <h3>Filters <button onclick="resetFilters()" class="reset-btn">Reset</button></h3>
+                
+                <div class="filter-group">
+                    <h4>Type</h4>
+                    <label><input type="radio" name="mediaType" value="movie" checked onchange="applyFilters()"> Movies</label>
+                    <label><input type="radio" name="mediaType" value="tv" onchange="applyFilters()"> TV Shows</label>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Genres</h4>
+                    <div id="genreList" class="checkbox-grid"></div>
+                </div>
+
+                <div class="filter-group">
+                    <h4>Sort By</h4>
+                    <select id="discoverSort" onchange="applyFilters()">
+                        <option value="popularity.desc">Popularity Descending</option>
+                        <option value="vote_average.desc">Rating Descending</option>
+                        <option value="primary_release_date.desc">Newest First</option>
+                    </select>
+                </div>
+                
+                <button class="apply-mobile-btn" onclick="toggleSidebar()">Close Filters</button>
+            </aside>
+
+            <div class="browse-results">
+                <button class="apply-mobile-btn" style="margin-bottom:10px;" onclick="toggleSidebar()">Open Filters</button>
+                <div id="browseGrid" class="movie-grid"></div>
+                <button id="loadMoreBtn" onclick="loadMoreBrowse()">Load More</button>
+            </div>
+        </div>
+    </div>
+
     <div id="status"></div>
 
     <main id="movieGrid" class="movie-grid"></main>
+
+    <div id="pagination" class="pagination-controls" style="display: none;">
+        <button id="prevBtn" onclick="changePage(-1)" disabled>
+            <i class="fa-solid fa-chevron-left"></i> Prev
+        </button>
+        <span id="pageIndicator">Page 1</span>
+        <button id="nextBtn" onclick="changePage(1)">
+            Next <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
 
     <a href="#" class="floating-button" id="scrollTopBtn" title="Top" onclick="scrollToHome()">
         <i class="fa-solid fa-up-long"></i>
@@ -620,10 +916,214 @@
         const tmdbKey = "b6ed0366df58af3c63fae705358f25c9";
         const statusDiv = document.getElementById('status');
 
+        let currentPage = 1;
+        let currentMode = 'home';
+
+        let browsePageNum = 1;
+        let selectedGenres = [];
         let fetchedMovies = [];
         let currentSort = 'default';
         let abortController = null;
 
+        async function fetchGenres() {
+            const type = document.querySelector('input[name="mediaType"]:checked').value;
+            const url = `https://api.themoviedb.org/3/genre/${type}/list?api_key=${tmdbKey}&language=en-US`;
+            const res = await fetch(url);
+            const data = await res.json();
+
+            const container = document.getElementById('genreList');
+            container.innerHTML = '';
+            data.genres.forEach(g => {
+                const span = document.createElement('span');
+                span.className = 'genre-tag';
+                span.innerText = g.name;
+                span.onclick = () => toggleGenre(g.id, span);
+                container.appendChild(span);
+            });
+        }
+
+        function toggleGenre(id, el) {
+            el.classList.toggle('selected');
+            if (selectedGenres.includes(id)) {
+                selectedGenres = selectedGenres.filter(g => g !== id);
+            } else {
+                selectedGenres.push(id);
+            }
+            applyFilters(); 
+        }
+
+        async function applyFilters(isLoadMore = false) {
+            if (!isLoadMore) {
+                browsePageNum = 1;
+                document.getElementById('browseGrid').innerHTML = '';
+            }
+
+            const type = document.querySelector('input[name="mediaType"]:checked').value;
+            const sort = document.getElementById('discoverSort').value;
+            const genreString = selectedGenres.join(',');
+
+            const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${tmdbKey}&language=en-US&sort_by=${sort}&with_genres=${genreString}&page=${browsePageNum}`;
+
+            const res = await fetch(url);
+            const data = await res.json();
+
+            const grid = document.getElementById('browseGrid');
+            data.results.forEach(item => {
+                const title = item.title || item.name;
+                const date = item.release_date || item.first_air_date || 'N/A';
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                const img = item.poster_path ? `https://image.tmdb.org/t/p/w300${item.poster_path}` : 'https://demofree.sirv.com/nope-not-here.jpg';
+                card.onclick = () => window.open(`https://www.google.com/search?q=${encodeURIComponent(title + " " + type)}`, '_blank');
+
+                card.innerHTML = `
+                    <div class="poster" style="background-image: url('${img}')"></div>
+                    <div class="info">
+                        <div class="title">${title}</div>
+                        <div class="meta">
+                            <span class="rating">⭐ ${item.vote_average.toFixed(1)}</span>
+                            <span>${date.split('-')[0]}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function loadMoreBrowse() {
+            browsePageNum++;
+            applyFilters(true);
+        }
+
+        window.onload = () => {
+            switchTab('home');
+        };
+
+        function changePage(step) {
+            if ((currentPage === 1 && step === -1) || (currentPage === 5 && step === 1)) return;
+
+            currentPage += step;
+            document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
+
+            document.getElementById('prevBtn').disabled = (currentPage === 1);
+            document.getElementById('nextBtn').disabled = (currentPage === 5);
+
+            loadTopMovies(currentPage);
+            scrollToHome();
+        }
+
+        // 'top_rated' to get the best 100 movies
+        async function loadTopMovies(page) {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '';
+            fetchedMovies = [];
+            setStatus(`Loading Top Movies (Page ${page})...`, "neutral");
+
+            try {
+                const url = `https://api.themoviedb.org/3/movie/top_rated?api_key=${tmdbKey}&language=en-US&page=${page}`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.results) {
+                    for (const movie of data.results) {
+                        fetchedMovies.push(movie);
+                        createMovieCard(movie);
+                        await new Promise(r => setTimeout(r, 50));
+                    }
+                    setStatus("", "neutral");
+                }
+            } catch (e) {
+                setStatus("Error loading movies.", "error");
+            }
+        }
+
+        
+        function switchTab(mode) {
+            currentMode = mode;
+            const searchWrapper = document.querySelector('.search-wrapper');
+            const pagination = document.getElementById('pagination');
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const grid = document.getElementById('movieGrid');
+            const browsePage = document.getElementById('browsePage');
+            const status = document.getElementById('status');
+
+            navBtns.forEach(btn => btn.classList.remove('active'));
+            
+            searchWrapper.style.display = 'none';
+            pagination.style.display = 'none';
+            browsePage.style.display = 'none';
+            status.innerHTML = ''; 
+
+            if (mode === 'browse') {
+                navBtns[3].classList.add('active'); 
+                grid.style.display = 'none';        
+                browsePage.style.display = 'block';
+                
+                if (document.getElementById('browseGrid').innerHTML === "") {
+                    fetchGenres();
+                    applyFilters();
+                }
+            } 
+            else if (mode === 'home') {
+                navBtns[0].classList.add('active');
+                grid.style.display = 'grid';       
+                loadTrendingMovies();
+            } 
+            else if (mode === 'top-100') {
+                navBtns[1].classList.add('active');
+                grid.style.display = 'grid';       
+                pagination.style.display = 'flex';
+
+                currentPage = 1;
+                document.getElementById('pageIndicator').innerText = "Page 1";
+                document.getElementById('prevBtn').disabled = true;
+                document.getElementById('nextBtn').disabled = false;
+                loadTopMovies(1);
+            } 
+            else {
+                navBtns[2].classList.add('active');
+                grid.style.display = 'grid';       
+                searchWrapper.style.display = 'flex';
+                
+                grid.innerHTML = ''; 
+                fetchedMovies = [];
+                setStatus("Ready to search.", "neutral");
+                setTimeout(() => document.getElementById('userPrompt').focus(), 100);
+            }
+        }
+
+        // 'top' to get the best 20 movies
+        async function loadTrendingMovies() {
+            const grid = document.getElementById('movieGrid');
+            const controls = document.getElementById('sortControls');
+
+            setStatus("Loading Top Movies...", "neutral");
+            grid.innerHTML = '';
+            fetchedMovies = [];
+
+            try {
+                const url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${tmdbKey}&language=en-US`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.results && data.results.length > 0) {
+                    setStatus("", "neutral");
+
+                    for (const movie of data.results) {
+                        fetchedMovies.push(movie);
+                        createMovieCard(movie);
+                        await new Promise(r => setTimeout(r, 50));
+                    }
+                } else {
+                    setStatus("Could not load trending movies.", "error");
+                }
+
+            } catch (e) {
+                console.error(e);
+                setStatus("Error connecting to TMDB.", "error");
+            }
+        }
         function toggleDropdown() {
             document.querySelector('.select-options').classList.toggle('open');
         }
@@ -672,6 +1172,7 @@
         function setStatus(msg, type = "neutral") {
             statusDiv.innerText = msg;
             statusDiv.style.color = type === "error" ? "#ff5555" : type === "success" ? "#00f2ea" : "#888";
+            statusDiv.style.display = msg ? "block" : "none";
         }
 
         async function runLumina() {
@@ -717,7 +1218,7 @@
 
                 setStatus(`Found ${titles.length} matches. Loading visuals...`, "success");
 
-                // // Fetch Posters from TMDB
+                // Fetch Posters from TMDB
                 for (let i = 0; i < titles.length; i++) {
                     if (!abortController) break;
 
@@ -921,8 +1422,6 @@
             textarea.style.height = '55px';
             textarea.focus();
             document.getElementById('btnClear').style.display = 'none';
-            // handleInput(textarea);
-            // textarea.style.minHeight = '63px';
         }
 
     </script>
