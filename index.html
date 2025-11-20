@@ -32,9 +32,14 @@
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            display: block;
+            display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
         }
 
         header {
@@ -77,9 +82,26 @@
             gap: 15px;
         }
 
+        .search-wrapper {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: #0f1014ad;
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            flex-direction: row;
+            border-radius: 30px;
+            align-items: center;
+            gap: 20px;
+        }
+
         .search-container {
             position: relative;
-            width: 100%;
+            flex: 1;
         }
 
         #userPrompt {
@@ -130,9 +152,8 @@
             justify-content: flex-end;
             align-items: center;
             gap: 10px;
-            padding: 0 10px;
-            position: relative;
-            z-index: 50;
+            flex: 1;
+            min-width: 250px;
         }
 
         .custom-select {
@@ -143,7 +164,6 @@
             user-select: none;
         }
 
-        
         .select-trigger {
             background: var(--bg-card);
             border: 1px solid #333;
@@ -205,13 +225,12 @@
             color: var(--accent);
         }
 
-
         .movie-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 2rem;
+            gap: 1rem;
             width: 100%;
-            padding: 2rem;
+            padding: 1.5rem;
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -275,6 +294,26 @@
             height: 20px;
         }
 
+        footer a {
+            font-size: 0.8rem;
+            color: #ddd !important;
+            text-decoration-line: none;
+        }
+
+        footer a:hover {
+            color: var(--accent) !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            border-top: 1px solid #333;
+            background: #0f1014;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -289,7 +328,6 @@
 
 <body>
     <header>
-        <!-- <h1>Nikhil Filmy</h1> -->
         <h1>
             <i class="fa-solid fa-film"
                 style="background: -webkit-linear-gradient(#00c6ff, #0072ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
@@ -297,47 +335,44 @@
         </h1>
         <h4>Movie Recommendations</h4>
         <p class="subtitle">Describe a vibe, plot, or feeling. AI does the rest.</p>
+    </header>
 
-        <div class="search-wrapper">
-            <div class="search-container">
-                <input type="text" id="userPrompt" placeholder="e.g., 'Mind-bending sci-fi movies that are scary'">
-                <button id="btnGo" onclick="runLumina()">Search</button>
-            </div>
+    <div class="search-wrapper">
+        <div class="search-container">
+            <input type="text" id="userPrompt" placeholder="e.g., 'Mind-bending sci-fi movies that are scary'">
+            <button id="btnGo" onclick="runLumina()">Search</button>
+        </div>
 
-            <div class="controls" id="sortControls">
-                <span style="color:#aaa; font-size:0.9rem;">Sort By:</span>
-
-                <div class="custom-select" id="customSelect">
-                    <div class="select-trigger" onclick="toggleDropdown()">
-                        <span id="selectedText">✨ Relevance</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </div>
-
-                    <div class="select-options">
-                        <div class="option" onclick="selectOption('default', '✨ Relevance')">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Relevance
-                        </div>
-                        <div class="option" onclick="selectOption('rating_high', '⭐ Rating: High to Low')">
-                            <i class="fa-solid fa-arrow-up-9-1"></i> Rating: High to Low
-                        </div>
-                        <div class="option" onclick="selectOption('rating_low', '⭐ Rating: Low to High')">
-                            <i class="fa-solid fa-arrow-down-1-9"></i> Rating: Low to High
-                        </div>
-                        <div class="option" onclick="selectOption('newest', '📅 Release: Latest First')">
-                            <i class="fa-regular fa-calendar-plus"></i> Release: Latest First
-                        </div>
-                        <div class="option" onclick="selectOption('oldest', '📅 Release: Oldest First')">
-                            <i class="fa-regular fa-calendar-minus"></i> Release: Oldest First
-                        </div>
-                    </div>
+        <div class="controls" id="sortControls">
+            <span style="color:#aaa; font-size:0.9rem;">Sort By:</span>
+            <div class="custom-select" id="customSelect">
+                <div class="select-trigger" onclick="toggleDropdown()">
+                    <span id="selectedText">✨ Relevance</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="select-options">
+                    <div class="option" onclick="selectOption('default', '✨ Relevance')"><i
+                            class="fa-solid fa-wand-magic-sparkles"></i> Relevance</div>
+                    <div class="option" onclick="selectOption('rating_high', '⭐ Rating: High to Low')"><i
+                            class="fa-solid fa-arrow-up-9-1"></i> Rating: High to Low</div>
+                    <div class="option" onclick="selectOption('rating_low', '⭐ Rating: Low to High')"><i
+                            class="fa-solid fa-arrow-down-1-9"></i> Rating: Low to High</div>
+                    <div class="option" onclick="selectOption('newest', '📅 Release: Latest First')"><i
+                            class="fa-regular fa-calendar-plus"></i> Release: Latest First</div>
+                    <div class="option" onclick="selectOption('oldest', '📅 Release: Oldest First')"><i
+                            class="fa-regular fa-calendar-minus"></i> Release: Oldest First</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="status"></div>
-    </header>
+    <div id="status" style="text-align: center; margin: 10px 0;"></div>
 
     <main id="movieGrid" class="movie-grid"></main>
+
+    <footer>
+        &copy; 2025 Developed by <a target="_blank" href="#" style="font-weight: bold; color: #fff;">Sai Nikhil</a>
+    </footer>
 
     <script>
         // API CONFIGURATION
@@ -391,15 +426,31 @@
             try {
                 // Fetch Movie Titles from Gemini
                 const titles = await fetchGeminiRecommendations(prompt, geminiKey);
+
+                if (!titles || titles.length === 0) {
+                    setStatus("AI couldn't find any movies for that. Try a genre like 'Action' or 'Sci-Fi'.", "error");
+                    btn.disabled = false;
+                    btn.innerText = "Search";
+                    return;
+                }
+
                 setStatus(`Found ${titles.length} matches. Loading visuals...`, "success");
 
                 // Fetch Posters from TMDB
                 for (const title of titles) {
-                    const movie = await fetchTMDBData(title, tmdbKey);
-                    if (movie) {
-                        fetchedMovies.push(movie);
-                        createMovieCard(movie);
+                    let movie = await fetchTMDBData(title, tmdbKey);
+                    if (!movie) {
+                        movie = {
+                            title: title,
+                            poster_path: "https://demofree.sirv.com/nope-not-here.jpg",
+                            vote_average: null,
+                            release_date: null,
+                            id: `ghost-${Math.random().toString(36).substr(2, 9)}`
+                        };
                     }
+                    fetchedMovies.push(movie);
+                    createMovieCard(movie);
+
                     controls.style.display = 'flex';
                     await new Promise(r => setTimeout(r, 100));
                 }
@@ -446,19 +497,20 @@
                 Guidelines for Accuracy:
                 1. Prioritize movies with high critical acclaim (Rotten Tomatoes/IMDb) or cult status.
                 2. Avoid TV shows, series, or shorts (Feature films only).
-                3. Ensure diversity in the list (mix of blockbusters, hidden gems, and classics).
+                3. Ensure diversity in the list (mix of blockbusters, hidden gems).
                 4. Use the exact official English title to ensure database lookup success (e.g., use "Star Wars" not "Star Wars Episode IV").
                 5. If a specific actor/actress is mentioned (e.g., "Megastar"), ONLY list their movies.
                 6. If fewer than 50 relevant movies exist, return as many as possible without filler titles.
                 7. Do NOT include any additional text, explanations, or formatting outside of the JSON array.
                 8. Respond in English.
-                9. Stick to movies released up to 2024.
+                9. Always include movies upto 2025 if they fit the criteria. this is very important.
                 10. Avoid duplicates.
                 11. Exclude remakes, reboots, or sequels unless specifically requested.
                 12. Focus on original titles rather than translated or localized versions.
                 13. Ensure the list is relevant to the user's query.
                 14. Avoid overly obscure titles that lack sufficient information for database lookup.
                 15. Do NOT include any non-movie entries.
+                16. mainly include RECENT MOVIES from 2020, 2021, 2022, 2023, 2024 and 2025. But if the user specifically requests "Classics", "Old", "Vintage", or mentions a specific decade (e.g., "80s", "90s"), include relevant older movies as well.
 
                 Important:
                 1.You are a smart Movie Database Translator.
@@ -471,9 +523,7 @@
                 8. Do NOT write "Transformers Telugu". Just write "Transformers".
                 9. If user asks for "Robo movies", only return movies featuring Robots.
                 10. Prioritize Relevance over Quantity: Do NOT fill the list with random movies like "Baahubali" or "KGF" unless they strictly fit the genre requested.
-                11. duplicates are not allowed.
-                12. Return up to 50 titles only.
-
+              
                 Output Format:
                 Return ONLY a raw JSON Array of strings. 
                 No markdown. No extra text.
@@ -512,19 +562,30 @@
 
         function createMovieCard(movie) {
             const grid = document.getElementById('movieGrid');
-            const posterUrl = movie.poster_path
-                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                : 'https://via.placeholder.com/500x750?text=No+Poster';
+            let posterUrl;
+            if (movie.poster_path && movie.poster_path.startsWith('http')) {
+                posterUrl = movie.poster_path;
+            } else if (movie.poster_path) {
+                posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+            } else {
+                posterUrl = "https://demofree.sirv.com/nope-not-here.jpg";
+            }
 
-            const year = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
+            const year = movie.release_date ? movie.release_date.split('-')[0] : '-';
+
+            let ratingDisplay;
+            if (movie.vote_average && movie.vote_average > 0) {
+                ratingDisplay = `<span class="rating"><i style="color: gold; font-size: 12px;" class="fa-solid fa-star"></i> ${movie.vote_average.toFixed(1)}</span>`;
+            } else {
+                ratingDisplay = `<span class="rating" style="color: #aaa;"><i style="color: gold; font-size: 12px;" class="fa-solid fa-star"></i> -</span>`;
+            }
 
             const card = document.createElement('div');
             card.className = 'card';
 
-            // Google Search on Click
+            // Search on click
             card.onclick = () => {
-                const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(movie.title + " movie")}`;
-                window.open(googleSearchUrl, '_blank');
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(movie.title + " movie")}`, '_blank');
             };
 
             card.innerHTML = `
@@ -532,13 +593,14 @@
                 <div class="info">
                     <div class="title">${movie.title}</div>
                     <div class="meta">
-                        <span class="rating"><i style="color: gold; font-size: 16px;" class="fa-solid fa-star"></i> ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</span>
+                        ${ratingDisplay}
                         <span>${year}</span>
                     </div>
                 </div>
             `;
             grid.appendChild(card);
         }
+
     </script>
 </body>
 
