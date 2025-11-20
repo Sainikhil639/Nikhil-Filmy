@@ -42,6 +42,36 @@
             width: 100%;
         }
 
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            background: #020c0c99;
+            padding: 15px 20px;
+            border-radius: 10%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            text-decoration: overline;
+            color: #ffffff78;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .floating-button:hover {
+            color: #0fcbce9a;
+        }
+
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: #0fcbcee2;
+            width: 0;
+            z-index: 9999;
+            transition: width 0.2s ease-out;
+        }
+
         header {
             text-align: center;
             padding: 3rem 1rem 1rem 1rem;
@@ -165,8 +195,9 @@
         }
 
         .select-trigger {
-            background: var(--bg-card);
+            background: #00000080;
             border: 1px solid #333;
+
             border-radius: 8px;
             padding: 10px 15px;
             display: flex;
@@ -179,12 +210,21 @@
             border-color: var(--accent);
         }
 
+        .select-options.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            margin-top: 10px;
+        }
+
         .select-options {
             position: absolute;
             top: 110%;
             left: 0;
             right: 0;
-            background: var(--bg-card);
+            background: rgb(27 28 34 / 92%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid #333;
             border-radius: 8px;
             overflow: hidden;
@@ -192,14 +232,7 @@
             visibility: hidden;
             transform: translateY(-10px);
             transition: all 0.3s;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .select-options.open {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-            margin-top: 10px;
+            box-shadow: 0 10px 20px rgb(0 0 0 / 81%);
         }
 
         .option {
@@ -216,7 +249,7 @@
         }
 
         .option:hover {
-            background: #2a2a2a;
+            background: #15afb477;
             color: var(--accent);
         }
 
@@ -331,13 +364,16 @@
             header {
                 padding: 1.5rem 1rem 0.5rem 1rem;
             }
+
             h1 {
                 font-size: 2rem;
             }
+
             h4 {
                 font-size: 1rem;
                 margin-bottom: 0.5rem;
             }
+
             p.subtitle {
                 margin-bottom: 1rem;
                 font-size: 0.8rem;
@@ -348,7 +384,7 @@
                 gap: 10px;
                 padding: 10px;
                 width: 95%;
-                top: 10px;
+                border-radius: 15px;
             }
 
             .search-container {
@@ -401,6 +437,11 @@
                 height: 260px;
                 width: 100%;
             }
+
+            #userPrompt::placeholder {
+                font-size: 0.8rem;
+                transform: translateY(2px);
+            }
         }
     </style>
 </head>
@@ -421,6 +462,7 @@
             <input type="text" id="userPrompt" placeholder="e.g., 'Mind-bending sci-fi movies that are scary'">
             <button id="btnGo" onclick="runLumina()">Search</button>
         </div>
+
 
         <div class="controls" id="sortControls">
             <span style="color:#aaa; font-size:0.9rem;">Sort By:</span>
@@ -443,6 +485,7 @@
                 </div>
             </div>
         </div>
+        <div class="progress-bar"></div>
     </div>
 
     <div id="status" style="text-align: center; margin: 10px 0;"></div>
@@ -450,8 +493,16 @@
     <main id="movieGrid" class="movie-grid"></main>
 
     <footer>
-        &copy; 2025 Developed by <a target="_blank" href="#" style="font-weight: bold; color: #fff;">Sai Nikhil</a>
+        &copy; 2025 Developed by <a target="_blank" href="https://www.linkedin.com/in/sai-nikhil-898060175/"
+            title="Connect with Me" font-weight: bold; color: #fff;">Sai Nikhil</a>
     </footer>
+
+    <!-- Floating Button -->
+    <div id="floating-buttons-container" class="no-print">
+        <a href="#" class="floating-button" title="Top" style="right: 30px;" onclick="scrollToHome()">
+            <i class="fa-solid fa-up-long"></i>
+        </a>
+    </div>
 
     <script>
         // API CONFIGURATION
@@ -480,6 +531,13 @@
             if (!document.querySelector('.custom-select').contains(e.target)) {
                 document.querySelector('.select-options').classList.remove('open');
             }
+        });
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.progress-bar').style.width = scrollPercent + '%';
         });
 
         function setStatus(msg, type = "neutral") {
@@ -578,6 +636,7 @@
 
             grid.innerHTML = '';
             sortedList.forEach(movie => createMovieCard(movie));
+            scrollToHome();
         }
 
         async function fetchGeminiRecommendations(prompt, apiKey) {
@@ -652,6 +711,10 @@
             const res = await fetch(url);
             const data = await res.json();
             return data.results?.[0];
+        }
+
+        function scrollToHome() {
+            window.scrollTo(0, 0);
         }
 
         function createMovieCard(movie) {
