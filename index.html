@@ -130,7 +130,7 @@
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 0 2rem;
+            padding: 0 1rem;
             border-radius: 40px;
             font-weight: 700;
             cursor: pointer;
@@ -152,7 +152,7 @@
             justify-content: flex-end;
             align-items: center;
             gap: 10px;
-            flex: 1;
+            /* flex: 1; */
             min-width: 250px;
         }
 
@@ -199,6 +199,7 @@
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+            margin-top: 10px;
         }
 
         .option {
@@ -323,6 +324,84 @@
                 opacity: 1;
             }
         }
+
+
+        @media (max-width: 768px) {
+
+            header {
+                padding: 1.5rem 1rem 0.5rem 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h4 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            p.subtitle {
+                margin-bottom: 1rem;
+                font-size: 0.8rem;
+            }
+
+            .search-wrapper {
+                flex-direction: row;
+                gap: 10px;
+                padding: 10px;
+                width: 95%;
+                top: 10px;
+            }
+
+            .search-container {
+                flex: 4;
+            }
+
+            .controls {
+                display: none;
+                flex: 1;
+                min-width: auto;
+                justify-content: center;
+            }
+
+            .controls>span {
+                display: none;
+            }
+
+            .custom-select {
+                width: 100%;
+                min-width: 50px;
+            }
+
+            .select-trigger {
+                padding: 12px;
+                justify-content: center;
+            }
+
+            #selectedText {
+                display: none;
+            }
+
+            .select-trigger i {
+                margin: 0;
+                font-size: 1.2rem;
+            }
+
+            .select-options {
+                left: auto;
+                right: 0;
+                width: 220px;
+            }
+
+            .movie-grid {
+                padding: 1rem;
+                gap: 1rem;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .card {
+                height: 260px;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -384,6 +463,8 @@
         let fetchedMovies = [];
         let currentSort = 'default';
 
+        let abortController = null;
+
         function toggleDropdown() {
             document.querySelector('.select-options').classList.toggle('open');
         }
@@ -407,18 +488,28 @@
         }
 
         async function runLumina() {
+            const btn = document.getElementById('btnGo');
             const prompt = document.getElementById('userPrompt').value.trim();
+            if (abortController) {
+                abortController.abort();
+                abortController = null;
+                btn.innerHTML = 'Search';
+                btn.style.background = "var(--accent)";
+                setStatus("Search stopped.", "neutral");
+                return;
+            }
             if (!geminiKey) return setStatus("Ai API Key Error, Contact Developer.", "error");
             if (!prompt) return setStatus("Please enter a movie description.", "error");
 
-            const btn = document.getElementById('btnGo');
+            abortController = new AbortController();
+            const signal = abortController.signal;
+
             const grid = document.getElementById('movieGrid');
             const controls = document.getElementById('sortControls');
 
-            // Reset State
-            btn.disabled = true;
-            btn.innerText = "...";
+            btn.innerHTML = '<i style="font-size:20px;" class="fa-solid fa-circle-stop"></i>';
             setStatus("Searching the best for you...");
+            btn.style.background = "#f3ad9a";
             grid.innerHTML = '';
             fetchedMovies = [];
             controls.style.display = 'none';
@@ -429,8 +520,6 @@
 
                 if (!titles || titles.length === 0) {
                     setStatus("AI couldn't find any movies for that. Try a genre like 'Action' or 'Sci-Fi'.", "error");
-                    btn.disabled = false;
-                    btn.innerText = "Search";
                     return;
                 }
 
@@ -458,11 +547,16 @@
                 setStatus("Ready.", "neutral");
 
             } catch (error) {
-                console.error(error);
-                setStatus(error.message, "error");
+                if (error.name === 'AbortError') {
+                    console.log("Fetch aborted by user");
+                } else {
+                    console.error(error);
+                    setStatus(error.message, "error");
+                }
             } finally {
-                btn.disabled = false;
-                btn.innerText = "Search";
+                btn.innerHTML = 'Search';
+                abortController = null;
+                btn.style.background = "var(--accent)";
             }
         }
 
